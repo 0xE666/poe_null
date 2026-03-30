@@ -1,0 +1,52 @@
+<UserControl x:Class="PoeNullEffects.UI.Views.CheckListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+        <!-- Filter Bar -->
+        <Border DockPanel.Dock="Top" Padding="8" Background="#F8F8F8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Filter:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox Grid.Column="1" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding ApplyFilterCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Column="2" Content="Filter" Command="{Binding ApplyFilterCommand}"/>
+                <Button Grid.Column="3" Content="Refresh" Command="{Binding RefreshCommand}"/>
+                <TextBlock Grid.Column="4" VerticalAlignment="Center" Margin="8,0,0,0">
+                    <Run Text="{Binding FilteredCount, Mode=OneWay}"/>
+                    <Run Text=" / "/>
+                    <Run Text="{Binding TotalCount, Mode=OneWay}"/>
+                    <Run Text=" particles"/>
+                </TextBlock>
+            </Grid>
+        </Border>
+
+        <!-- Help Text -->
+        <Border DockPanel.Dock="Top" Padding="8,4" Background="#FFFDE7">
+            <TextBlock Text="Filter by path substring, or use e&gt;N / e&lt;N / e=N to filter by emitter count"
+                       FontSize="11" Foreground="#666"/>
+        </Border>
+
+        <!-- Particle List -->
+        <ListView ItemsSource="{Binding FilteredParticles}"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" Width="500"/>
+                    <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Size, StringFormat='{}{0:N0}'}" Width="80"/>
+                    <GridViewColumn Header="Emitters" DisplayMemberBinding="{Binding EmitterCount}" Width="70"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>

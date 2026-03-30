@@ -1,0 +1,88 @@
+<UserControl x:Class="PoeNullEffects.UI.Views.NullEffectsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:PoeNullEffects.Core.Models;assembly=PoeNullEffects.Core">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
+        <StackPanel Margin="12">
+            <!-- Quick Presets -->
+            <GroupBox Header="Quick Presets" Padding="12" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Max Performance" Command="{Binding PresetMaxPerformanceCommand}"
+                            ToolTip="Null all particle effects for maximum FPS"
+                            Background="#FFE8E8" Padding="16,8" Margin="0,0,8,0"/>
+                    <Button Content="Balanced" Command="{Binding PresetBalancedCommand}"
+                            ToolTip="Keep important skill effects, remove clutter (Make Good 3)"
+                            Background="#FFF8E0" Padding="16,8" Margin="0,0,8,0"/>
+                    <Button Content="Restore Vanilla" Command="{Binding PresetVanillaCommand}"
+                            ToolTip="Restore all effects to original state from backup"
+                            Background="#E8F5E8" Padding="16,8"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Particle Nulling -->
+            <GroupBox Header="Null Particles (Advanced)" Padding="12" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Mode:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <RadioButton Content="Disable All"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumBoolConverter}, ConverterParameter={x:Static models:NullMode.All}}"
+                                 Margin="0,2"/>
+                    <RadioButton Content="Disable All Except List"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumBoolConverter}, ConverterParameter={x:Static models:NullMode.AllExcept}}"
+                                 Margin="0,2"/>
+                    <RadioButton Content="Disable Only List"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumBoolConverter}, ConverterParameter={x:Static models:NullMode.Only}}"
+                                 Margin="0,2"/>
+
+                    <CheckBox Content="Keep Emitters (preserve 1 emitter per particle)"
+                              IsChecked="{Binding KeepEmitters}" Margin="0,8,0,4"/>
+
+                    <Button Content="Null Particles" Command="{Binding NullParticlesCommand}"
+                            HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Shadows -->
+            <GroupBox Header="Shadows" Padding="12" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Disable Shadows" Command="{Binding DisableShadowsCommand}"/>
+                    <Button Content="Enable Shadows" Command="{Binding EnableShadowsCommand}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Corpses -->
+            <GroupBox Header="Corpses" Padding="12" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Disable Corpses" Command="{Binding DisableCorpsesCommand}"/>
+                    <Button Content="Enable Corpses" Command="{Binding EnableCorpsesCommand}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Make Good -->
+            <GroupBox Header="Make Good (Quality)" Padding="12" Margin="0,0,0,12">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                        <TextBlock Text="Level: " VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding MakeGoodValue}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text=" (0 = max performance, 6 = near vanilla)" Foreground="Gray" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Slider Minimum="0" Maximum="6" Value="{Binding MakeGoodValue}"
+                            TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True"
+                            Width="300" HorizontalAlignment="Left"/>
+                    <Button Content="Apply" Command="{Binding ApplyMakeGoodCommand}"
+                            HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Restore -->
+            <GroupBox Header="Backup / Restore" Padding="12" Margin="0,0,0,12">
+                <Button Content="Restore All from Backup" Command="{Binding RestoreAllCommand}"
+                        HorizontalAlignment="Left"/>
+            </GroupBox>
+
+            <!-- Progress -->
+            <ProgressBar Height="20" Value="{Binding ProgressValue}" Maximum="100"
+                         Visibility="{Binding IsProcessing, Converter={StaticResource BoolToVisConverter}}"
+                         Margin="0,8,0,0"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

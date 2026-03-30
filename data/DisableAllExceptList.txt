@@ -1,0 +1,15 @@
+# Effects to KEEP when using "Disable All Except" mode
+# One path substring per line (case-insensitive match)
+lightning_orb
+surge
+blood_rage
+herald
+aura/
+arctic_armour
+tempest_shield
+righteous_fire
+molten_shell
+immortal_call
+phase_run
+vaal_grace
+league/

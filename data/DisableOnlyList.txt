@@ -1,0 +1,16 @@
+# Effects to specifically DISABLE when using "Disable Only" mode
+# One path substring per line (case-insensitive match)
+blood
+corpse_explosion
+rain
+discharge
+ground_effects
+fog
+smoke
+fire_ground
+cold_ground
+lightning_ground
+desecrate
+poison_cloud
+caustic
+tar

@@ -1,0 +1,15 @@
+<Application x:Class="PoeNullEffects.UI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:PoeNullEffects.UI.Converters"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <converters:EnumBoolConverter x:Key="EnumBoolConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="MinWidth" Value="100"/>
+        </Style>
+    </Application.Resources>
+</Application>

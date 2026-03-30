@@ -1,0 +1,17 @@
+bin/
+obj/
+publish/
+publish*/
+.vs/
+*.user
+*.suo
+data/backups/
+*.pdb
+
+# Diagnostic tool (not part of the main project)
+src/GgpkDiag/
+
+# Build artifacts
+oo2core_ooz_x64.dll
+oo2core_wrapper.c
+/tmp/

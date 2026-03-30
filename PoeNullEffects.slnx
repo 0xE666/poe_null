@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PoeNullEffects.Core/PoeNullEffects.Core.csproj" />
+    <Project Path="src/PoeNullEffects.Tests/PoeNullEffects.Tests.csproj" />
+    <Project Path="src/PoeNullEffects.UI/PoeNullEffects.UI.csproj" />
+  </Folder>
+</Solution>
