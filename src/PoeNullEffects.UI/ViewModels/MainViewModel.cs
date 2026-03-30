@@ -28,6 +28,7 @@ public partial class MainViewModel : ObservableObject
     {
         var dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
         Directory.CreateDirectory(dataDir);
+        EnsureDefaultDataFiles(dataDir);
 
         _config = Config.Load(Path.Combine(dataDir, "config.ini"));
         _ggpkService = new GgpkService();
@@ -222,6 +223,38 @@ public partial class MainViewModel : ObservableObject
         {
             LogText = string.IsNullOrEmpty(LogText) ? timestamped : LogText + Environment.NewLine + timestamped;
         });
+    }
+
+    private static void EnsureDefaultDataFiles(string dataDir)
+    {
+        var exceptList = Path.Combine(dataDir, "DisableAllExceptList.txt");
+        if (!File.Exists(exceptList))
+        {
+            File.WriteAllText(exceptList,
+                "# Effects to KEEP when using \"Disable All Except\" mode\n" +
+                "# One path substring per line (case-insensitive match)\n" +
+                "lightning_orb\nsurge\nblood_rage\nherald\naura/\n" +
+                "arctic_armour\ntempest_shield\nrighteous_fire\n" +
+                "molten_shell\nimmortal_call\nphase_run\nvaal_grace\nleague/\n");
+        }
+
+        var onlyList = Path.Combine(dataDir, "DisableOnlyList.txt");
+        if (!File.Exists(onlyList))
+        {
+            File.WriteAllText(onlyList,
+                "# Effects to specifically DISABLE when using \"Disable Only\" mode\n" +
+                "# One path substring per line (case-insensitive match)\n" +
+                "blood\ncorpse_explosion\nrain\ndischarge\nground_effects\n" +
+                "fog\nsmoke\nfire_ground\ncold_ground\nlightning_ground\n" +
+                "desecrate\npoison_cloud\ncaustic\ntar\n");
+        }
+
+        var config = Path.Combine(dataDir, "config.ini");
+        if (!File.Exists(config))
+        {
+            File.WriteAllText(config,
+                "ggpkPath=\nnullParticlesMethod=1\nkeepEmitters=0\nmakeGoodValue=2\n");
+        }
     }
 
     private static bool IsPoERunning()
