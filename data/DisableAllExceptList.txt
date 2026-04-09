@@ -12,4 +12,13 @@ molten_shell
 immortal_call
 phase_run
 vaal_grace
+portal
+mirage
+breach
+waypoint
 league/
+# Force-null delirium fog (! overrides league/ keep)
+!delirium
+!deli_fog
+!delirium_fog
+!affliction_fog

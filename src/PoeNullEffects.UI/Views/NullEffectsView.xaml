@@ -57,6 +57,23 @@
                 </StackPanel>
             </GroupBox>
 
+            <!-- Delirium Fog -->
+            <GroupBox Header="Delirium Fog" Padding="12" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Nulls delirium fog .aoc/.epk/.mat files in GGPK. Restart PoE after applying."
+                               Foreground="Gray" Margin="0,0,0,8" TextWrapping="Wrap"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Kill Deli Fog" Command="{Binding PatchFogCommand}"
+                                ToolTip="Null all delirium fog environment effects"
+                                Background="#FFE8E8" Padding="16,8" Margin="0,0,8,0"/>
+                        <Button Content="Restore Fog" Command="{Binding RestoreFogCommand}"
+                                ToolTip="Use Restore All to restore fog files from backup"
+                                Background="#E8F5E8" Padding="16,8" Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding FogStatus}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
             <!-- Make Good -->
             <GroupBox Header="Make Good (Quality)" Padding="12" Margin="0,0,0,12">
                 <StackPanel>

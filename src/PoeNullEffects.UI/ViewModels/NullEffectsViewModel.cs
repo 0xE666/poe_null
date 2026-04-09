@@ -3,6 +3,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PoeNullEffects.Core;
+using PoeNullEffects.Core.Memory;
 using PoeNullEffects.Core.Models;
 
 namespace PoeNullEffects.UI.ViewModels;
@@ -17,12 +18,15 @@ public partial class NullEffectsViewModel : ObservableObject
     private readonly ShadowManager _shadowManager;
     private readonly CorpseManager _corpseManager;
     private readonly MakeGoodProcessor _makeGoodProcessor;
+    private readonly DeliriumFogNuller _deliriumFogNuller;
+    private FogPatcher? _fogPatcher;
 
     [ObservableProperty] private NullMode _selectedMode;
     [ObservableProperty] private bool _keepEmitters;
     [ObservableProperty] private int _makeGoodValue;
     [ObservableProperty] private int _progressValue;
     [ObservableProperty] private bool _isProcessing;
+    [ObservableProperty] private string _fogStatus = "";
 
     public NullEffectsViewModel(GgpkService ggpkService, Config config,
         BackupManager backupManager, MainViewModel main)
@@ -35,6 +39,7 @@ public partial class NullEffectsViewModel : ObservableObject
         _shadowManager = new ShadowManager(ggpkService, backupManager);
         _corpseManager = new CorpseManager(ggpkService, backupManager);
         _makeGoodProcessor = new MakeGoodProcessor(ggpkService, backupManager);
+        _deliriumFogNuller = new DeliriumFogNuller(ggpkService);
 
         SelectedMode = config.NullParticlesMethod;
         KeepEmitters = config.KeepEmitters != 0;
@@ -236,6 +241,63 @@ public partial class NullEffectsViewModel : ObservableObject
         {
             IsProcessing = false;
         }
+    }
+
+    // === Delirium Fog (GGPK Null) ===
+
+    [RelayCommand]
+    private async Task PatchFog()
+    {
+        if (!_main.IsGgpkOpen) return;
+        IsProcessing = true;
+        ProgressValue = 0;
+        FogStatus = "Scanning...";
+
+        try
+        {
+            var progress = new Progress<int>(v => ProgressValue = v);
+
+            // Debug: show ALL affliction/delirium .aoc/.fxgraph files
+            var allAffliction = await Task.Run(() => _deliriumFogNuller.FindAllAfflictionFiles());
+            _main.Log($"=== ALL affliction/delirium .aoc/.fxgraph files ({allAffliction.Count}) ===");
+            foreach (var f in allAffliction)
+                _main.Log($"  {f}");
+
+            // Now find the specific fog files to null
+            var fogFiles = await Task.Run(() => _deliriumFogNuller.FindFogFiles());
+            _main.Log($"\nDelirium fog: Found {fogFiles.Count} fog .aoc files to null.");
+            foreach (var f in fogFiles)
+                _main.Log($"  -> {f}");
+
+            if (fogFiles.Count == 0)
+            {
+                FogStatus = $"No fog .aoc found (see {allAffliction.Count} total affliction files in log)";
+                return;
+            }
+
+            var (nulled, total) = await Task.Run(() =>
+                _deliriumFogNuller.Execute(_backupManager, progress));
+
+            _backupManager.Save();
+            FogStatus = $"Nulled {nulled}/{total}";
+            _main.Log($"Delirium fog: Nulled {nulled}/{total} fog files. Restart PoE to take effect.");
+        }
+        catch (Exception ex)
+        {
+            FogStatus = "Error";
+            _main.Log($"Delirium fog error: {ex.Message}");
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task RestoreFog()
+    {
+        FogStatus = "";
+        _main.Log("Fog files are included in the full backup. Use 'Restore All from Backup' to restore.");
     }
 
     [RelayCommand]
